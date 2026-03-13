@@ -1,27 +1,32 @@
 # Drawing with LLMs
 
-一个面向 Kaggle **Drawing with LLMs** 的文本到 SVG 生成项目。  
-该仓库将原始单文件 Notebook 重构为可维护、可扩展、可展示的工程化项目，核心逻辑保持一致。
+A production-style refactor of a Kaggle **Drawing with LLMs** solution for text-to-SVG generation.  
+This repository keeps the original notebook and restructures it into a clean, modular Python project for reproducibility, demonstration, and future extension.
 
-## 项目目标
+## 🏠 Kaggle Competition: Drawing with LLMs
 
-输入自然语言提示词，输出满足约束的 SVG 矢量图，核心流程包含：
+- Final Score: **0.67953**
+- Rank: **Top 4.66%**
 
-1. Prompt 工程（前后缀 + 负面提示）
-2. SDXL + Lightning + LoRA 位图生成
-3. 位图到 SVG 的分层转换与压缩
-4. 候选结果评分与择优
-5. 最终 SVG 后处理并导出
+## Project Goal
 
-## 技术亮点
+Convert natural-language prompts into constrained, high-quality SVG vector graphics through:
 
-- **生成侧优化**：SDXL + Lightning UNet（少步数快速推理）+ Vector 风格 LoRA
-- **转换侧优化**：KMeans 量化、轮廓提取、重要性排序、多级多边形简化
-- **约束感知**：在 SVG 字节预算内尽可能保留核心视觉信息
-- **工程化重构**：Notebook 逻辑拆分为清晰模块 + 可复用 CLI 脚本
-- **Kaggle 友好**：保留提交入口 `Model`，支持批量评估与提交文件导出
+1. Prompt engineering (prefix/suffix/negative prompt)
+2. SDXL + Lightning + LoRA bitmap generation
+3. Layered bitmap-to-SVG conversion with size control
+4. Candidate scoring and best-result selection
+5. Final SVG post-processing for submission
 
-## Pipeline 结构
+## Key Highlights
+
+- **Generation optimization:** SDXL + Lightning UNet for fast inference + vector-oriented LoRA
+- **Conversion optimization:** KMeans quantization, contour extraction, importance sorting, polygon simplification
+- **Constraint-aware output:** maximizes visual fidelity under strict SVG byte limits
+- **Engineering refactor:** notebook logic split into maintainable modules and runnable scripts
+- **Kaggle-ready interface:** preserves `Model` submission entry and supports batch workflows
+
+## Pipeline
 
 ```mermaid
 flowchart LR
@@ -33,7 +38,7 @@ flowchart LR
     F --> G["Final SVG"]
 ```
 
-## 项目结构
+## Project Structure
 
 ```text
 drawing-with-llms/
@@ -64,44 +69,44 @@ drawing-with-llms/
     └── .gitkeep
 ```
 
-## 核心模块说明
+## Core Modules
 
-- `model_loader.py`：加载 SDXL、Lightning UNet、LoRA 及调度器
-- `bitmap_generator.py`：文本提示到位图生成
-- `svg_converter.py`：位图到 SVG 的主算法（特征提取/简化/预算控制）
-- `evaluators.py`：评估器定义与初始化缓存
-- `metrics.py`：SVG 渲染、评分封装、图像处理工具
-- `pipeline.py`：完整多次尝试 + 评分择优流程
-- `postprocess.py`：最终 SVG 细节修正
-- `kaggle_model.py`：Kaggle 提交入口 `Model`
+- `model_loader.py`: loads SDXL, Lightning UNet, scheduler, and LoRA weights
+- `bitmap_generator.py`: prompt-to-bitmap generation
+- `svg_converter.py`: layered bitmap-to-SVG conversion and byte-budget packing
+- `evaluators.py`: evaluator classes and lazy initialization
+- `metrics.py`: SVG rendering helpers and metric wrappers
+- `pipeline.py`: full multi-attempt generate-convert-evaluate loop
+- `postprocess.py`: final SVG post-processing
+- `kaggle_model.py`: Kaggle submission `Model` class
 
-## 快速开始
+## Quick Start
 
-### 1) 安装依赖
+### 1) Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2) 单条 Prompt 生成
+### 2) Run a Single Prompt
 
 ```bash
 python scripts/run_single.py --prompt "a lighthouse overlooking the ocean"
 ```
 
-默认输出：`outputs/single.svg`
+Default output: `outputs/single.svg`
 
-### 3) 训练集批量评估
+### 3) Batch Evaluation on Train CSV
 
 ```bash
 python scripts/evaluate_train.py --csv /path/to/train.csv --limit 20
 ```
 
-默认输出：
-- 评估结果：`outputs/train_eval_results.csv`
-- 生成 SVG：`outputs/eval_svgs/`
+Default outputs:
+- Evaluation table: `outputs/train_eval_results.csv`
+- Generated SVGs: `outputs/eval_svgs/`
 
-### 4) 导出提交文件
+### 4) Export Submission CSV
 
 ```bash
 python scripts/export_submission.py \
@@ -109,29 +114,29 @@ python scripts/export_submission.py \
   --output-csv outputs/submission.csv
 ```
 
-## 配置建议
+## Configuration Tips
 
-常用参数在 `kaggle_model.py` 与脚本参数中可调：
+Frequently tuned parameters (in `kaggle_model.py` and CLI args):
 
-- `num_attempts_per_prompt`：每个 prompt 采样次数（质量 vs 时间）
-- `num_inference_steps`：扩散步数（速度 vs 细节）
-- `guidance_scale`：提示词约束强度
-- `prompt_prefix / prompt_suffix / negative_prompt`：风格与质量引导
+- `num_attempts_per_prompt`: more attempts improve selection but increase runtime
+- `num_inference_steps`: speed-quality tradeoff for diffusion sampling
+- `guidance_scale`: prompt adherence strength
+- `prompt_prefix / prompt_suffix / negative_prompt`: style and quality control
 
-## 兼容性与限制
+## Compatibility and Limitations
 
-- 本项目保留了原 Notebook 的核心行为，不做大幅算法改写。
-- 评估函数中 `VQAEvaluator` 目前为占位实现（返回 0），当前综合分数主要由 aesthetic 分数驱动。
-- 模型下载依赖 Kaggle Hub；在本地运行时请确保网络和环境可用。
+- The project preserves original notebook behavior and avoids major algorithm rewrites.
+- `VQAEvaluator` is currently a placeholder (returns `0`), so combined score is primarily aesthetic-driven in this codebase.
+- Model fetching depends on Kaggle Hub; ensure environment/network readiness for local runs.
 
-## 原始 Notebook
+## Original Notebook
 
-原始版本已保留在：
+The original notebook is preserved at:
 
 `notebooks/sdxl-lora-original.ipynb`
 
-## 致谢
+## Acknowledgements
 
 - Kaggle: Drawing with LLMs
 - Stability AI (SDXL)
-- SDXL Lightning / LoRA 社区模型作者
+- SDXL Lightning / LoRA community contributors
