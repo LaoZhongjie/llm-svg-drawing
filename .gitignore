@@ -35,10 +35,6 @@ htmlcov/
 models/
 checkpoints/
 
-# Outputs
-outputs/*
-!outputs/.gitkeep
-
 # Local data artifacts
 *.csv.tmp
 *.parquet
