@@ -1,0 +1,15 @@
+numpy
+pandas
+matplotlib
+torch
+diffusers
+transformers
+safetensors
+Pillow
+opencv-python
+cairosvg
+more-itertools
+kagglehub
+ipython
+accelerate
+git+https://github.com/openai/CLIP.git

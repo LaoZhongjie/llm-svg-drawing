@@ -1,0 +1,44 @@
+# OS / Editor
+.DS_Store
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+.venv/
+venv/
+env/
+
+# Packaging / tests
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Caches / runtime
+.cache/
+*.log
+
+# Model artifacts
+*.ckpt
+*.pt
+*.pth
+*.safetensors
+models/
+checkpoints/
+
+# Outputs
+outputs/*
+!outputs/.gitkeep
+
+# Local data artifacts
+*.csv.tmp
+*.parquet
