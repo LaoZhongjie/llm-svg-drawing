@@ -1,7 +1,8 @@
 # Drawing with LLMs
 
-A production-style refactor of a Kaggle **Drawing with LLMs** solution for text-to-SVG generation.  
-This repository keeps the original notebook and restructures it into a clean, modular Python project for reproducibility, demonstration, and future extension.
+This repository presents a production-style refactor of a Kaggle **Drawing with LLMs** competition solution.
+It converts natural language prompts into structured SVG vector graphics through a multi-stage pipeline combining diffusion-based image generation and bitmap-to-SVG vectorization.
+The project preserves the original Kaggle notebook while restructuring the code into a clean, modular Python project designed for reproducibility, experimentation, and future extension.
 
 ## 🏠 Kaggle Competition: Drawing with LLMs
 
